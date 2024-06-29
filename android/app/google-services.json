@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1008692904258",
+    "project_id": "lawhub-85521",
+    "storage_bucket": "lawhub-85521.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008692904258:android:a1fcd214d7f729ba8c48db",
+        "android_client_info": {
+          "package_name": "com.example.lawhub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZZsqNWc33EyyAcdsusZjvMAV2B_Q-ASs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

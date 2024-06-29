@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'Test1.dart';
+
+class test2 extends StatelessWidget {
+  test2({Key? key}) : super(key: key);
+
+  final Uri _url = Uri.parse('https://sandbox.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform/');
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
+  void _navigateToScreen(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => test1()));
+        break;
+      case 1:
+        _launchUrl();
+        break;
+      default:
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Payment'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            _navigateToScreen(context, 0);
+          },
+          child: const Text('Proceed to Payment'),
+        ),
+      ),
+    );
+  }
+}

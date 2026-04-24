@@ -1,11 +1,10 @@
-
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-Future createPaymentIntent({
+Future<Map<String, dynamic>?> createPaymentIntent({
   required String name,
   required String address,
   required String pin,
@@ -15,35 +14,36 @@ Future createPaymentIntent({
   required String currency,
   required String amount,
 }) async {
-    final url = Uri.parse('https://api.stripe.com/v1/payment_intents');
-    final secretKey = dotenv.env['STRIPE_SECRET_KEY']!;
-    final body = {
+  final backendUrl = dotenv.env['PAYMENT_BACKEND_URL'];
+  if (backendUrl == null || backendUrl.isEmpty) {
+    debugPrint('[Payment] PAYMENT_BACKEND_URL not set in .env');
+    return null;
+  }
+
+  final email = FirebaseAuth.instance.currentUser?.email ?? '';
+
+  final response = await http.post(
+    Uri.parse(backendUrl),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
       'amount': amount,
       'currency': currency.toLowerCase(),
-      'automatic_payment_methods[enabled]': 'true',
-      'description': 'Testing',
-      'shipping[name]': name,
-      'shipping[address][line1]': address,
-      'shipping[address][postal_code]': pin,
-      'shipping[address][city]': city,
-      'shipping[address][state]': state,
-      'shipping[address][country]': country,
-    };
+      'name': name,
+      'address': address,
+      'city': city,
+      'state': state,
+      'country': country,
+      'pin': pin,
+      'email': email,
+    }),
+  );
 
-    final response = await http.post(url,
-      headers: {
-        'Authorization': "Bearer $secretKey",
-        'Content-Type': "application/x-www-form-urlencoded"
-      },
-      body: body
-    );
-
-    if(response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-      print(json);
-      return json;
-    }
-    else {
-      print('error in Calling Payment Intent');
-    }
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    debugPrint('[Payment] Intent created: ${json['paymentIntent']}');
+    return json;
+  } else {
+    debugPrint('[Payment] Backend error ${response.statusCode}: ${response.body}');
+    return null;
+  }
 }

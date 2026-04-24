@@ -3,11 +3,11 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lawhub/Utils/Utilities.dart';
+import 'package:lawhub/Utils/CloudinaryUpload.dart';
 import '../Lawyer_Pages/LawyerAppBar&NavBar.dart';
 import '../User_Pages/UserAppBar&NavBar.dart';
 
@@ -43,14 +43,7 @@ class _ProfilePictureUpdateState extends State<ProfilePictureUpdate> {
 
   Future uploadImageToFirebase(File imageFile) async {
     try {
-      String fileName = widget.userData['id'];
-      firebase_storage.Reference ref = firebase_storage
-          .FirebaseStorage.instance
-          .ref()
-          .child('profile_pictures')
-          .child(fileName);
-      await ref.putFile(imageFile);
-      String imageUrl = await ref.getDownloadURL();
+      String imageUrl = await CloudinaryUpload.uploadProfilePicture(imageFile);
       if(widget.isUser) {
         await FirebaseFirestore.instance.collection('Users').doc(widget.userData['id']).update({'profilePic': imageUrl}).then((value){
           setState(() {
@@ -84,12 +77,7 @@ class _ProfilePictureUpdateState extends State<ProfilePictureUpdate> {
 
   Future deleteImage() async {
     try {
-      firebase_storage.Reference ref = firebase_storage
-          .FirebaseStorage.instance
-          .ref()
-          .child('profile_pictures')
-          .child(widget.userData['id']);
-      ref.delete();
+      // Cloudinary doesn't require deletion - just update Firestore
       if(widget.isUser) {
         await FirebaseFirestore.instance.collection('Users').doc(widget.userData['id']).update({'profilePic': 'null'}).then((value){
           setState(() {
@@ -186,7 +174,7 @@ class _ProfilePictureUpdateState extends State<ProfilePictureUpdate> {
                   backgroundColor: Colors.grey[300],
                   backgroundImage: _image != null ? FileImage(_image!) : null,
                   child: _image == null
-                      ? widget.userData['profilePic'] != 'null'
+                      ? widget.userData['profilePic'] != 'null' && widget.userData['profilePic'] != null
                         ? ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(80)),
                     child: SizedBox(

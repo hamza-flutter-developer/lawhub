@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lawhub/InformationUpdate_Pages/InfoUpdated.dart';
 import 'package:lawhub/model/Province_City.dart';
 import 'package:lawhub/services/Province_City.dart';
-import 'package:multiselect/multiselect.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart'; // ✅ UPDATED: New package import
 
 
 class UserPersonalInfoUpdate extends StatefulWidget{
@@ -846,6 +846,7 @@ class _UserPersonalInfoUpdateState extends State<UserPersonalInfoUpdate> {
                               const SizedBox(
                                 height: 10,
                               ),
+                              // ✅ FIXED: Changed from DropDownMultiSelect to MultiSelectDialogField
                               Padding(
                                 padding: EdgeInsets.only(
                                   top: 0.01 *
@@ -853,7 +854,6 @@ class _UserPersonalInfoUpdateState extends State<UserPersonalInfoUpdate> {
                                 ),
                                 child: Container(
                                     width: 300,
-                                    height: 49,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(15),
@@ -862,35 +862,41 @@ class _UserPersonalInfoUpdateState extends State<UserPersonalInfoUpdate> {
                                           color: Colors.grey.withOpacity(0.5),
                                           spreadRadius: 2,
                                           blurRadius: 7,
-                                          offset: const Offset(1, 1), // changes position of shadow
+                                          offset: const Offset(1, 1),
                                         )
                                       ],),
-                                    child: Padding(padding: const EdgeInsets.only(left: 20, right: 10),
-                                      child: DropDownMultiSelect(
-                                        hint: Text(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 20, right: 10),
+                                      child: MultiSelectDialogField(
+                                        // Convert string list to MultiSelectItem list
+                                        items: expertiseList.map((e) => MultiSelectItem(e, e)).toList(),
+                                        title: const Text("Select Areas of Practice"),
+                                        buttonText: Text(
                                           "Select At-least 1 Area",
                                           style: TextStyle(
                                             fontFamily: 'roboto',
                                             fontSize: 16,
-                                            color: Colors.grey.shade500,),
+                                            color: Colors.grey.shade500,
+                                          ),
                                         ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.transparent),
                                         ),
-                                        selected_values_style: const TextStyle(
-                                          fontFamily: 'roboto',
-                                          fontSize: 16,
+                                        buttonIcon: Icon(
+                                          Icons.arrow_drop_down,
+                                          color: Colors.grey.shade700,
                                         ),
-
-                                        options: expertiseList,
-                                        selectedValues: selectedExpertise,
-                                        onChanged: (value) {
+                                        selectedColor: Colors.blue,
+                                        searchable: true,
+                                        // Callback when user confirms selection
+                                        onConfirm: (values) {
                                           setState(() {
-                                            selectedExpertise = value;
+                                            selectedExpertise = values.cast<String>();
                                           });
                                         },
-                                      ),)
+                                        initialValue: selectedExpertise,
+                                      ),
+                                    )
 
                                 ),
                               ),

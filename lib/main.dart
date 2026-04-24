@@ -27,7 +27,7 @@ import 'package:lawhub/services/Province_City.dart';
 import 'package:lawhub/widgets/Fonts.dart';
 import 'package:lawhub/widgets/Themes.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
-import 'package:multiselect/multiselect.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'LoginSignup_Pages/ForgetPassword.dart';
 import 'Lawyer_Pages/LawyerChat.dart';
 import 'Article_Pages/ArticleAddUpdate.dart';

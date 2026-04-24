@@ -1,0 +1,112 @@
+=== LAWHUB FRONTEND FILES - COPY TO CHATGPT ===
+
+📁 FOUNDATION FILES (Start Here):
+1. lib/main.dart
+2. lib/Utils/Utilities.dart
+3. lib/Utils/CloudinaryUpload.dart
+
+📁 AUTHENTICATION:
+4. lib/Starting_Pages/SplashScreen.dart
+5. lib/Starting_Pages/GetStartPage.dart
+6. lib/LoginSignup_Pages/LoginPage.dart
+7. lib/LoginSignup_Pages/UserSignup.dart
+8. lib/LoginSignup_Pages/LawyerSignup.dart
+9. lib/LoginSignup_Pages/UserType.dart
+10. lib/LoginSignup_Pages/SignupPage.dart
+11. lib/LoginSignup_Pages/SignupOTPVerification.dart
+12. lib/LoginSignup_Pages/PhoneNumberVerification.dart
+13. lib/LoginSignup_Pages/ForgetPassword.dart
+14. lib/LoginSignup_Pages/VerifyEmail.dart
+15. lib/LoginSignup_Pages/ChangePassword.dart
+
+📁 USER FEATURES:
+16. lib/User_Pages/UserAppBar&NavBar.dart
+17. lib/User_Pages/UserHomePage.dart
+18. lib/User_Pages/UserLawyerProfile.dart
+19. lib/User_Pages/UserSendRequest.dart
+20. lib/User_Pages/UserChat.dart
+21. lib/User_Pages/UserStartCase.dart
+22. lib/User_Pages/UserCaseView.dart (in CaseDisplay_Pages)
+23. lib/User_Pages/UserRattingFeedback.dart
+24. lib/User_Pages/UserFavourite.dart
+25. lib/User_Pages/UserNotifications.dart
+26. lib/User_Pages/UserProfile.dart
+27. lib/User_Pages/UserRequestSubmitted.dart
+
+📁 CHAT FEATURES:
+28. lib/Chat_Pages/ChatInbox.dart
+29. lib/Chat_Pages/ImageDisplay.dart
+
+📁 LAWYER FEATURES:
+30. lib/Lawyer_Pages/LawyerAppBar&NavBar.dart
+31. lib/Lawyer_Pages/LawyerRequests.dart
+32. lib/Lawyer_Pages/LawyerLicenseVerification.dart
+33. lib/Lawyer_Pages/LawyerChat.dart
+34. lib/Lawyer_Pages/LawyerNotifications.dart
+35. lib/Lawyer_Pages/LawyerProfile.dart
+36. lib/Lawyer_Pages/LawyerLicenseDetailsSubmitted.dart
+
+📁 PAYMENT:
+37. lib/Payment_Pages/CreatePayment.dart
+38. lib/Payment_Pages/payment.dart
+39. lib/Payment_Pages/PaymentHistory.dart
+40. lib/Payment_Pages/PaymentSuccessful.dart
+41. lib/Payment_Pages/ManagePayments.dart
+
+📁 PROFILE UPDATES:
+42. lib/InformationUpdate_Pages/ProfilePictureUpdate.dart
+43. lib/InformationUpdate_Pages/PersonalInfoUpdate.dart
+44. lib/InformationUpdate_Pages/EmailPhoneUpdate.dart
+45. lib/InformationUpdate_Pages/PasswordChange.dart
+46. lib/InformationUpdate_Pages/EmailUpdateVerify.dart
+47. lib/InformationUpdate_Pages/PhoneUpdateOTP.dart
+48. lib/InformationUpdate_Pages/CredentialChangeAuth.dart
+49. lib/InformationUpdate_Pages/CredentialPassword.dart
+50. lib/InformationUpdate_Pages/LawyerAboutPracticeUpdate.dart
+51. lib/InformationUpdate_Pages/LawyerAvailabilityUpdate.dart
+52. lib/InformationUpdate_Pages/PersonalInformation.dart
+53. lib/InformationUpdate_Pages/InfoUpdated.dart
+
+📁 ARTICLES:
+54. lib/Article_Pages/ArticlesView.dart
+55. lib/Article_Pages/ArticleAddUpdate.dart
+56. lib/Article_Pages/ArticleExplained.dart
+57. lib/Article_Pages/ManageArticles.dart
+58. lib/Article_Pages/ArticleAddedUpdated.dart
+
+📁 DRAWER (SIDE MENU):
+59. lib/Drawer_Pages/Drawer.dart
+60. lib/Drawer_Pages/AboutUs.dart
+61. lib/Drawer_Pages/Help&Support.dart
+62. lib/Drawer_Pages/Terms&Policies.dart
+
+📁 WIDGETS & UTILITIES:
+63. lib/widgets/Buttons.dart
+64. lib/widgets/Themes.dart
+65. lib/widgets/Fonts.dart
+
+📁 MODELS & SERVICES:
+66. lib/Model/Province_City.dart
+67. lib/Services/Province_City.dart
+
+📁 FIREBASE:
+68. lib/Firebase/firebase_options.dart
+
+📁 CASE DISPLAY:
+69. lib/CaseDisplay_Pages/UserCaseView.dart
+
+=== HOW TO USE ===
+1. Copy a file path above
+2. Go to ChatGPT
+3. Ask: "Explain this Flutter/Dart code in detail: [paste file path]"
+4. Or: "What does this code do and how does it work? [paste file path]"
+5. Study the explanation
+6. Move to next file
+
+=== RECOMMENDED ORDER ===
+Start with files 1-3 (Foundation)
+Then files 4-15 (Authentication)
+Then files 16-27 (User Features)
+Then files 28-29 (Chat)
+Then files 30-36 (Lawyer Features)
+Then rest as needed

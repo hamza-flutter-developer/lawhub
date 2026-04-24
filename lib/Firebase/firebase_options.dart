@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBRLhOYqDi9di_IvZydoEW4WjTMQIbt78k',
-    appId: '1:1008692904258:web:2befbac0f059e4cb8c48db',
-    messagingSenderId: '1008692904258',
-    projectId: 'lawhub-85521',
-    authDomain: 'lawhub-85521.firebaseapp.com',
-    storageBucket: 'lawhub-85521.appspot.com',
+    apiKey: 'AIzaSyAzZXiXunAE3_znMVH7o_lj4hH1Ob2KEWk',
+    appId: '1:815352042500:web:395555ef16b23003a45151',
+    messagingSenderId: '815352042500',
+    projectId: 'lawyer-hiring-app-b3415',
+    authDomain: 'lawyer-hiring-app-b3415.firebaseapp.com',
+    storageBucket: 'lawyer-hiring-app-b3415.firebasestorage.app',
     measurementId: 'G-HJMPN4LZGL',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCZZsqNWc33EyyAcdsusZjvMAV2B_Q-ASs',
-    appId: '1:1008692904258:android:a1fcd214d7f729ba8c48db',
-    messagingSenderId: '1008692904258',
-    projectId: 'lawhub-85521',
-    storageBucket: 'lawhub-85521.appspot.com',
+    apiKey: 'AIzaSyAI0xmXTr3LmaYndAr-haDINqx9fqN_bHo',
+    appId: '1:815352042500:android:ec56111f89026459a45151',
+    messagingSenderId: '815352042500',
+    projectId: 'lawyer-hiring-app-b3415',
+    storageBucket: 'lawyer-hiring-app-b3415.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBc17iUOAuBsVV_F6t5MXXfpt2zyuxiCuo',
-    appId: '1:1008692904258:ios:b53e905d2719d9478c48db',
-    messagingSenderId: '1008692904258',
-    projectId: 'lawhub-85521',
-    storageBucket: 'lawhub-85521.appspot.com',
+    apiKey: 'AIzaSyAI0xmXTr3LmaYndAr-haDINqx9fqN_bHo',
+    appId: '1:815352042500:ios:ec56111f89026459a45151',
+    messagingSenderId: '815352042500',
+    projectId: 'lawyer-hiring-app-b3415',
+    storageBucket: 'lawyer-hiring-app-b3415.firebasestorage.app',
     iosBundleId: 'com.example.lawhub',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBc17iUOAuBsVV_F6t5MXXfpt2zyuxiCuo',
-    appId: '1:1008692904258:ios:1e14e1282b93a8d68c48db',
-    messagingSenderId: '1008692904258',
-    projectId: 'lawhub-85521',
-    storageBucket: 'lawhub-85521.appspot.com',
+    apiKey: 'AIzaSyAI0xmXTr3LmaYndAr-haDINqx9fqN_bHo',
+    appId: '1:815352042500:ios:ec56111f89026459a45151',
+    messagingSenderId: '815352042500',
+    projectId: 'lawyer-hiring-app-b3415',
+    storageBucket: 'lawyer-hiring-app-b3415.firebasestorage.app',
     iosBundleId: 'com.example.lawhub.RunnerTests',
   );
 }

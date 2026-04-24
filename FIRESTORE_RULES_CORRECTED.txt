@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if document ID matches user's email
+    function isOwnerEmail(userEmail) {
+      return isAuthenticated() && request.auth.token.email == userEmail;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.email == 'admin@gmail.com';
+    }
+    
+    // Users collection - allow read to check if account exists (for login), authenticated users can write
+    match /Users/{userId} {
+      // Allow read to check if account exists (needed for login before authentication)
+      allow read: if true; // Allow anyone to check if user exists (needed for login)
+      allow create, update, delete: if isAuthenticated() && (request.auth.token.email == userId || resource == null);
+    }
+    
+    // Lawyers collection - allow read to check if account exists (for login), authenticated users can write
+    match /Lawyers/{lawyerId} {
+      // Allow read to check if account exists (needed for login before authentication)
+      allow read: if true; // Allow anyone to check if lawyer exists (needed for login)
+      // Admin can update any lawyer document (for approval/rejection)
+      // Lawyers can update their own document
+      // Users can update to change rating (numberOfRatings, ratting, sumOfRatings)
+      allow create, delete: if isAuthenticated() && (isAdmin() || request.auth.token.email == lawyerId || resource == null);
+      allow update: if isAuthenticated(); // Allow users to update ratings, lawyers to update their own, admin to update any
+    }
+    
+    // UsersNotifications - users can read/write their own notifications
+    match /UsersNotifications/{userId} {
+      allow read, write: if isAuthenticated() && (request.auth.token.email == userId || resource == null);
+    }
+    
+    // LawyersNotifications - lawyers can read/write their own notifications
+    match /LawyersNotifications/{lawyerId} {
+      allow read, write: if isAuthenticated() && (request.auth.token.email == lawyerId || resource == null);
+    }
+    
+    // ChatRooms - authenticated users can read/write
+    match /ChatRooms/{chatRoomId} {
+      allow read, write: if isAuthenticated();
+      match /Chats/{chatId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+    
+    // UsersChats - users can read/write their own chats
+    match /UsersChats/{userId} {
+      allow read, write: if isAuthenticated() && (request.auth.token.email == userId || resource == null);
+    }
+    
+    // LawyersChats - lawyers can read/write their own chats
+    match /LawyersChats/{lawyerId} {
+      allow read, write: if isAuthenticated() && (request.auth.token.email == lawyerId || resource == null);
+    }
+    
+    // Favourite - users can read/write their own favorites
+    match /Favourite/{userId} {
+      allow read, write: if isAuthenticated() && (request.auth.token.email == userId || resource == null);
+    }
+    
+    // Payments - users can read/write their own payments
+    match /Payments/{userId} {
+      allow read, write: if isAuthenticated() && (request.auth.token.email == userId || resource == null);
+    }
+    
+    // CasesUser - users can read/write their own cases, lawyers can update to accept/reject cases
+    match /CasesUser/{userId} {
+      allow read: if isAuthenticated();
+      // Users can create/update their own cases, lawyers can update to change status (accept/reject)
+      allow create, delete: if isAuthenticated() && (request.auth.token.email == userId || resource == null);
+      allow update: if isAuthenticated(); // Both users and lawyers can update (lawyers accept/reject, users update status)
+    }
+    
+    // CasesLawyer - lawyers can read/write their own cases, users can update when starting cases
+    match /CasesLawyer/{lawyerId} {
+      allow read: if isAuthenticated();
+      // Lawyers can create/update their own cases, users can update when submitting cases
+      allow create, delete: if isAuthenticated() && (request.auth.token.email == lawyerId || resource == null);
+      allow update: if isAuthenticated(); // Both lawyers and users can update (users submit, lawyers accept/reject)
+    }
+    
+    // Articles - authenticated users can read, lawyers can write their own
+    match /Articles/{lawyerId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (request.auth.token.email == lawyerId || resource == null);
+    }
+    
+    // ✅ FIXED: LawyersLicense - lawyers can READ (to check counter) and WRITE (to submit license)
+    match /LawyersLicense/{adminId} {
+      // Admin can read and write
+      allow read, write: if isAdmin();
+      // Lawyers can read (to check if document exists and get counter) and write (to submit license)
+      allow read, write: if isAuthenticated() && request.auth.token.email != 'admin@gmail.com';
+    }
+    
+    // LawyersFeedbacks - authenticated users can read/write
+    match /LawyersFeedbacks/{lawyerId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // Requests collection - users send requests to lawyers, lawyers read their requests
+    match /Requests/{lawyerId} {
+      // Users need to read to check if document exists and get counter before sending request
+      // Lawyers can read their own requests
+      allow read: if isAuthenticated();
+      // Any authenticated user can write (users send requests, lawyers update status)
+      allow write: if isAuthenticated();
+    }
+  }
+}

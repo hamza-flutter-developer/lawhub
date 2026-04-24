@@ -31,7 +31,7 @@ class _drawerState extends State<drawer> {
         children: [
           Padding(
             padding: EdgeInsets.only(top: 0.07 * MediaQuery.of(context).size.width),
-            child: widget.imageURL != 'null'
+            child: widget.imageURL != 'null' && widget.imageURL != null
             ? CircleAvatar(
               radius: 53,
               child: ClipOval(

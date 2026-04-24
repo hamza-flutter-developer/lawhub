@@ -1,22 +1,28 @@
 buildscript {
-    ext.kotlin_version = '1.8.10'
+    ext.kotlin_version = '2.3.10'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.3.2'
+        classpath 'com.android.tools.build:gradle:8.9.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.4.1'
     }
 }
 
-
 allprojects {
     repositories {
         google()
         mavenCentral()
+    }
+
+    afterEvaluate { project ->
+        // Suppress deprecation warnings
+        project.tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:-deprecation"
+        }
     }
 }
 
@@ -27,8 +33,19 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(':app')
 }
+subprojects {
+    plugins.withId("com.android.library") {
+        android {
+            ndkVersion "28.2.13676358"
+        }
+    }
+    plugins.withId("com.android.application") {
+        android {
+            ndkVersion "28.2.13676358"
+        }
+    }
+}
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-

@@ -4,10 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lawhub/Payment_Pages/PaymentSuccessful.dart';
-import 'package:lawhub/Payment_Pages/payment.dart';
 import 'package:lawhub/Utils/Utilities.dart';
 
 
@@ -50,14 +48,6 @@ class _CreatePaymentState extends State<CreatePayment> {
 
   bool isLoading = false;
 
-  // ignore: prefer_typing_uninitialized_variables
-  late final data;
-
-  String? tId;
-  String? amount;
-  String? currency;
-  String? dateTime;
-
   String checkMonth(int index){
     switch (index) {
       case 1:
@@ -89,71 +79,76 @@ class _CreatePaymentState extends State<CreatePayment> {
     }
   }
 
-  Future<void> initPaymentSheet() async {
-    try {
-      // 1. create payment intent on the server
-      data = await createPaymentIntent(
-          name: nameController.text,
-          address: addressController.text,
-          pin: pinCodeController.text,
-          city: cityController.text,
-          state: stateController.text,
-          country: countryController.text,
-          currency: selectedCurrencyText,
-          amount: (int.parse(amountController.text)*100).toString()
-      );
+  Future<void> _processPayment() async {
+    final email = FirebaseAuth.instance.currentUser!.email.toString();
+    final topUpAmount = double.parse(amountController.text);
 
+    final now = DateTime.now();
+    int minuteInt = now.minute;
+    int hourInt = now.hour;
+    int dayInt = now.day;
+    int monthInt = now.month;
 
-      // 2. initialize the payment sheet
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          // Set to true for custom flow
-          customFlow: false,
-          // Main params
-          merchantDisplayName: 'Test Merchant',
-          paymentIntentClientSecret: data['client_secret'],
-          // Customer keys
-          customerEphemeralKeySecret: data['ephemeralKey'],
-          customerId: data['id'],
-        ),
-      );
-    } catch (e) {
-      debugPrint(e.toString());
-      rethrow;
-    }
-  }
+    String minute = minuteInt < 10 ? '0$minuteInt' : '$minuteInt';
+    String hour = hourInt >= 12 ? '${hourInt - 12}' : '$hourInt';
+    String amPm = hourInt >= 12 ? 'PM' : 'AM';
+    String date = dayInt < 10 ? '0$dayInt' : '$dayInt';
+    String month = checkMonth(monthInt);
+    String year = now.year.toString();
+    String dateTimeText = '$date $month $year, $hour:$minute $amPm';
 
-  Future<void> uploadToFirebase() async {
-    var doc = await FirebaseFirestore.instance.collection('Payments').doc(FirebaseAuth.instance.currentUser!.email.toString()).get();
-    if(doc.exists) {
+    String generatedTId = 'TXN_${now.millisecondsSinceEpoch}';
+
+    // Save to Payments collection
+    var doc = await FirebaseFirestore.instance.collection('Payments').doc(email).get();
+    if (doc.exists) {
       int counter = doc['counter'];
       counter++;
-      FirebaseFirestore.instance.collection('Payments').doc(FirebaseAuth.instance.currentUser!.email.toString()).update({
+      await FirebaseFirestore.instance.collection('Payments').doc(email).update({
         'transaction$counter': {
-          'tId': tId,
-          'amount': amount,
-          'currency': currency,
-          'dateTime': dateTime
+          'tId': generatedTId,
+          'amount': amountController.text,
+          'currency': selectedCurrencyText,
+          'dateTime': dateTimeText
         },
         'counter': counter
       });
-    }
-    else {
-      FirebaseFirestore.instance.collection('Payments').doc(FirebaseAuth.instance.currentUser!.email.toString()).set({
+    } else {
+      await FirebaseFirestore.instance.collection('Payments').doc(email).set({
         'transaction1': {
-          'tId': tId,
-          'amount': amount,
-          'currency': currency,
-          'dateTime': dateTime
+          'tId': generatedTId,
+          'amount': amountController.text,
+          'currency': selectedCurrencyText,
+          'dateTime': dateTimeText
         },
         'counter': 1
       });
     }
+
+    // Top up wallet balance
+    final walletRef = FirebaseFirestore.instance.collection('Wallets').doc(email);
+    final walletDoc = await walletRef.get();
+    final currentBalance = walletDoc.exists ? (walletDoc.data()?['balance'] ?? 0).toDouble() : 0.0;
+
+    await walletRef.set({
+      'balance': currentBalance + topUpAmount,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    await walletRef.collection('transactions').add({
+      'type': 'topup',
+      'amount': topUpAmount,
+      'otherPartyEmail': '',
+      'otherPartyName': 'Payment Top-up',
+      'otherPartyImage': 'null',
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
     setState(() {
       isLoading = false;
     });
     // ignore: use_build_context_synchronously
-    Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentSuccessful(isUser: widget.isUser, tId: tId!, currency: currency!, amount: amount!, dateTime: dateTime!)));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PaymentSuccessful(isUser: widget.isUser, tId: generatedTId, currency: selectedCurrencyText, amount: amountController.text, dateTime: dateTimeText)));
   }
 
   @override
@@ -640,34 +635,13 @@ class _CreatePaymentState extends State<CreatePayment> {
                               setState(() {
                                 isLoading = true;
                               });
-                              await initPaymentSheet();
-                              try{
-                                await Stripe.instance.presentPaymentSheet();
-
-                                int minuteInt = DateTime.now().minute;
-                                int hourInt = DateTime.now().hour;
-                                int dayInt = DateTime.now().day;
-                                int monthInt = DateTime.now().month;
-
-                                String dateTimeText;
-                                String minute = minuteInt < 10 ? '0$minuteInt' : '$minuteInt';
-                                String hour = hourInt >= 12 ? '${hourInt - 12}' : '$hourInt';
-                                String amPm = hourInt >= 12 ? 'PM' : 'AM';
-                                String date = dayInt < 10 ? '0$dayInt' : '$dayInt';
-                                String month = checkMonth(monthInt);
-                                String year = (DateTime.now().year).toString();
-                                dateTimeText = '$date $month $year, $hour:$minute $amPm';
-
-                                tId = data['id'];
-                                amount = amountController.text;
-                                currency = selectedCurrencyText;
-                                dateTime = dateTimeText;
-
+                              try {
+                                await _processPayment();
                                 Utilities().successMsg('Payment Done');
-                                uploadToFirebase();
-                              }catch(e) {
+                              } catch(e) {
                                 debugPrint(e.toString());
-                                Utilities().errorMsg(e.toString());
+                                setState(() => isLoading = false);
+                                Utilities().errorMsg('Payment failed. Try again.');
                               }
                             }
                             else {

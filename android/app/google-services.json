@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1008692904258",
-    "project_id": "lawhub-85521",
-    "storage_bucket": "lawhub-85521.appspot.com"
+    "project_number": "815352042500",
+    "project_id": "lawyer-hiring-app-b3415",
+    "storage_bucket": "lawyer-hiring-app-b3415.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1008692904258:android:a1fcd214d7f729ba8c48db",
+        "mobilesdk_app_id": "1:815352042500:android:ec56111f89026459a45151",
         "android_client_info": {
-          "package_name": "com.example.lawhub"
+          "package_name": "ANDRIOD.COM"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCZZsqNWc33EyyAcdsusZjvMAV2B_Q-ASs"
+          "current_key": "AIzaSyAI0xmXTr3LmaYndAr-haDINqx9fqN_bHo"
         }
       ],
       "services": {
